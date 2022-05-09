@@ -18,7 +18,8 @@ public class TimeLeftUpdate : MonoBehaviour
         PlayerTurnTimer.onTimerChange -= SetTextboxValue;
     }
 
-    private void SetTextboxValue(float newValue, Color timerColor) {
+    private void SetTextboxValue(float newValue, Color timerColor)
+    {
         textBox.text = newValue.ToString();
         textBox.color = timerColor;
     }

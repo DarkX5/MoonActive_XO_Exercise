@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-namespace XO.Core {
+namespace XO.Core
+{
     public class DataLoader : MonoBehaviour
     {
         public static DataLoader Instance { get; private set; }
@@ -69,7 +70,7 @@ namespace XO.Core {
                 // fallback in case of missing data/resources
                 for (int i = 0; i < playerNo; i += 1)
                 {
-                    playerColors[i] =(new Color(UnityEngine.Random.Range(0f, 1f),
+                    playerColors[i] = (new Color(UnityEngine.Random.Range(0f, 1f),
                                                 UnityEngine.Random.Range(0, 255),
                                                 UnityEngine.Random.Range(0f, 1f)));
                 }
@@ -77,11 +78,12 @@ namespace XO.Core {
 
             // load player icons
             string url;
-            for (int i = 0; i < playerNo; i += 1) {
+            for (int i = 0; i < playerNo; i += 1)
+            {
                 url = $"{Application.streamingAssetsPath}/MoonActive/PlayerIcon{(i + 1)}.png";
                 GetPlayerSpriteIconFromURL(i, url);
             }
-            
+
             // load strikeout image
             url = $"{Application.streamingAssetsPath}/MoonActive/Line.png";
             GetSpriteStrikeoutImageFromURL(url);
@@ -102,7 +104,7 @@ namespace XO.Core {
                 {
                     Debug.Log($"{req.error}: {req.downloadHandler.text}");
                 }
-            } ));
+            }));
         }
         private void GetSpriteStrikeoutImageFromURL(string url)
         {
@@ -131,26 +133,22 @@ namespace XO.Core {
             }
         }
 
-        private void CheckIsDataLoaded() {
+        private void CheckIsDataLoaded()
+        {
             isAllDataLoaded = true;
             // check if strikeout line sprite has been loaded
-            if (horizontalStrikeoutSprite == null) {
+            if (horizontalStrikeoutSprite == null)
+            {
                 isAllDataLoaded = false;
             }
             // check if all resources are loaded
-            for (int i = 0; isAllDataLoaded && i < playerNo; i += 1) {
-                if (playerIcons[i] == null) {
+            for (int i = 0; isAllDataLoaded && i < playerNo; i += 1)
+            {
+                if (playerIcons[i] == null)
+                {
                     isAllDataLoaded = false;
                 }
             }
-            // // check if all colors are loaded
-            // for (int i = 0; allDataLoaded && i < playerNo; i += 1)
-            // {
-            //     if (playerColors[i] == null)
-            //     {
-            //         allDataLoaded = false;
-            //     }
-            // }
         }
     }
 }

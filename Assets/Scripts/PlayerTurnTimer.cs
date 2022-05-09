@@ -7,7 +7,7 @@ using XO.Core;
 public class PlayerTurnTimer : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] [Range(0.1f, 1f)] private float timeUpdateFrequencyS = 1f;
+    [SerializeField][Range(0.1f, 1f)] private float timeUpdateFrequencyS = 1f;
     [SerializeField] private float timeLimitForTurns = 5f;
     [SerializeField] private Color timeLeftFullTextColor = Color.green;
     [SerializeField] private Color timeLeft2ThirdsTextColor = Color.yellow;
@@ -38,7 +38,8 @@ public class PlayerTurnTimer : MonoBehaviour
         GameHandler.onGameEnd -= GameEnded;
     }
 
-    private void StopTimer(uint turnNo) {
+    private void StopTimer(uint turnNo)
+    {
         if (tempCO != null)
         {
             StopCoroutine(tempCO);
@@ -51,13 +52,16 @@ public class PlayerTurnTimer : MonoBehaviour
         gameEnded = true;
         StopTimer(0);
     }
-    private void GameEnded() {
+    private void GameEnded()
+    {
         gameEnded = true;
         StopTimer(0);
     }
-    private void ResetTimer(uint turnNo) {
+    private void ResetTimer(uint turnNo)
+    {
         // stop coroutine if running
-        if (tempCO != null) {
+        if (tempCO != null)
+        {
             StopCoroutine(tempCO);
         }
 
@@ -67,7 +71,8 @@ public class PlayerTurnTimer : MonoBehaviour
         timeLeft = timeLimitForTurns;
     }
 
-    private IEnumerator RunTimerCo() {
+    private IEnumerator RunTimerCo()
+    {
         // ignore any currently running coroutines after game end
         if (gameEnded == false)
         {
@@ -78,29 +83,35 @@ public class PlayerTurnTimer : MonoBehaviour
         yield return new WaitForSeconds(timeUpdateFrequencyS);
 
         // ignore any currently running coroutines after game end
-        if (gameEnded == false) { 
+        if (gameEnded == false)
+        {
             // update time left
             timeLeft -= timeUpdateFrequencyS;
-            
+
             // check for coroutine start/stop
-            if (timeLeft > 0f) {
+            if (timeLeft > 0f)
+            {
                 tempCO = RunTimerCo();
                 StartCoroutine(tempCO);
-            } else {
+            }
+            else
+            {
                 // send time left to subscribers (if any - UI)
                 onTimerChange?.Invoke(0f, GetCurrentColor());
 
                 GameHandler.Instance.TimeEndGame();
-                // // send call to any subscribers - game handler
-                // onPlayerTimerEnd?.Invoke();
             }
         }
     }
 
-    private Color GetCurrentColor() {
-        if (timeLeft <= (timeLimitForTurns / 3) + 1) {
-            return timeLeft1ThirdTextColor; 
-        } else if (timeLeft <= (timeLimitForTurns / 2) + 1) {
+    private Color GetCurrentColor()
+    {
+        if (timeLeft <= (timeLimitForTurns / 3) + 1)
+        {
+            return timeLeft1ThirdTextColor;
+        }
+        else if (timeLeft <= (timeLimitForTurns / 2) + 1)
+        {
             return timeLeft2ThirdsTextColor;
         }
 

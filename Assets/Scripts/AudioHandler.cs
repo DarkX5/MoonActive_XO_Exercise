@@ -4,20 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using XO.UI;
 
-namespace XO.Core {
+namespace XO.Core
+{
     public class AudioHandler : MonoBehaviour
     {
-        // private AudioSource buttonClickAudioSource = null;
-        // private AudioSource gameButtonClickAudioSource = null;
-        // private AudioSource victory = null;
         private AudioSource audioSource = null;
 
-        private void Start() {
-            // buttonClickAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
-            // gameButtonClickAudioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
-
-            // buttonClickAudioSource.clip = DataLoader.Instance.ButtonClickSFX;
-            // gameButtonClickAudioSource.clip = DataLoader.Instance.GameButtonClickSFX;
+        private void Start()
+        {
 
             audioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
 
@@ -26,19 +20,22 @@ namespace XO.Core {
             GameHandler.onGameEnd += PlayVictorySFX;
             GameHandler.onGameDraw += PlayDrawSFX;
         }
-        private void OnDestroy() {
+        private void OnDestroy()
+        {
             UIButtonsHandler.onUIButtonClick -= PlayButtonClickSFX;
             GameHandler.onGameButtonMove -= PlayGameButtonClickSFX;
             GameHandler.onGameEnd -= PlayVictorySFX;
             GameHandler.onGameDraw -= PlayDrawSFX;
         }
-        private void PlayAudioClip(AudioClip newClip) {
+        private void PlayAudioClip(AudioClip newClip)
+        {
             audioSource.Stop();
             audioSource.clip = newClip;
             audioSource.Play();
         }
 
-        public void PlayButtonClickSFX() {
+        public void PlayButtonClickSFX()
+        {
             PlayAudioClip(DataLoader.Instance.ButtonClickSFX);
         }
         public void PlayGameButtonClickSFX(uint buttonID)

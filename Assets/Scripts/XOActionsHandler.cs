@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace XO.Core {
+namespace XO.Core
+{
 
     public enum WinType
     {
@@ -13,28 +14,17 @@ namespace XO.Core {
     public class XOActionsHandler : MonoBehaviour
     {
         public static event Action<WinType, int> onWinningStreak = null;
-        
-        // public static XOActionsHandler Instance { get; private set; }
-        /* TODO - remove [SerializeField] - used 4 debugging */
-        [SerializeField] private XOContainerActions[] buttonList = null;
-        // [SerializeField] private List<IWmage> buttonImageList = null;
-        [SerializeField] private uint[,] gameBoard = null;
-        // [SerializeField] private List<uint> movesList = new List<uint>();
 
-        
+        private XOContainerActions[] buttonList = null;
+        private uint[,] gameBoard = null;
+
+
         // cache free spaces
         List<int> freeSpaces = new List<int>();
         private uint boardSize;
         private uint minWinPoints;
         private bool hintUsed = false;
-        
-        // private void Awake() {
-        //     if(Instance == null) {
-        //         Instance = this;
-        //     } else {
-        //         Destroy(gameObject);
-        //     }
-        // }
+
         void Start()
         {
             // get game data
@@ -43,20 +33,16 @@ namespace XO.Core {
 
             // get buttons and set their IDs
             buttonList = GetComponentsInChildren<XOContainerActions>();
-            for (uint i = 0; i < buttonList.Length; i += 1) {
+            for (uint i = 0; i < buttonList.Length; i += 1)
+            {
                 buttonList[i].SetMoveID(i);
             }
-            // foreach (var button in buttonList)
-            // {
-            //     buttonImageList.Add(button.GetComponent<Image>());
-            // }
 
             gameBoard = new uint[boardSize, boardSize];
             freeSpaces = new List<int>();
 
             // subscribe to turn end event
             GameHandler.onEndTurn += CheckValues;
-            // GameHandler.onNewTurn += CheckValues;
             GameHandler.onMoveAI += AIMove;
             GameHandler.onUndoTurn += EnableButton;
         }
@@ -64,7 +50,6 @@ namespace XO.Core {
         {
             // unsubscribe to turn end event
             GameHandler.onEndTurn -= CheckValues;
-            // GameHandler.onNewTurn -= CheckValues;
             GameHandler.onMoveAI -= AIMove;
             GameHandler.onUndoTurn -= EnableButton;
         }
@@ -80,22 +65,22 @@ namespace XO.Core {
                     idx = (int)(i * boardSize) + j;
                     gameBoard[i, j] = buttonList[idx].PlayerID;
 
-                    // if ()
-
                     // get empty positions
                     if (buttonList[idx].IsButtonEnabled != false)
                     {
                         freeSpaces.Add(idx);
                     }
-                    
-                    if (hintUsed) {
+
+                    if (hintUsed)
+                    {
                         // clear previous hint
                         buttonList[idx].DeactivateHintButton();
                     }
                 }
             }
         }
-        private void CheckValues (uint turnNo) {
+        private void CheckValues(uint turnNo)
+        {
             UpdateGameBoardData();
 
             uint hPointsID, vPointsID, d1PointsID, d2PointsID;
@@ -103,42 +88,54 @@ namespace XO.Core {
             long invertedI;
             bool movesLeft = false;
             // check horizontal & vertical lines
-            for (int i = 0; i < boardSize; i += 1) {
+            for (int i = 0; i < boardSize; i += 1)
+            {
                 // reset points & possible winner
                 hPointsID = vPointsID = d1PointsID = d2PointsID = 0;
                 hPoints = vPoints = 1;
-                if(gameBoard[i, 0] < 1 || gameBoard[0, i] < 1) {
+                if (gameBoard[i, 0] < 1 || gameBoard[0, i] < 1)
+                {
                     movesLeft = true;
                 }
-                for (int j = 1; j < boardSize; j += 1) {
+                for (int j = 1; j < boardSize; j += 1)
+                {
                     // check horizontal
                     if (gameBoard[i, j] > 0)
                     {
-                        if (gameBoard[i, j-1] == gameBoard[i, j]) {
+                        if (gameBoard[i, j - 1] == gameBoard[i, j])
+                        {
                             hPointsID = gameBoard[i, j];
                             hPoints += 1;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         movesLeft = true;
                     }
-                    
+
                     // check vertical
                     if (gameBoard[j, i] > 0)
                     {
-                        if (gameBoard[j-1, i] == gameBoard[j, i]) {
+                        if (gameBoard[j - 1, i] == gameBoard[j, i])
+                        {
                             vPointsID = gameBoard[j, i];
                             vPoints += 1;
                         }
                     }
                 }
-                
+
                 // check diagonals 
-                if (i > 0) {
-                    if (gameBoard[i, i] > 0) {
-                        if (gameBoard[i, i] == gameBoard[i-1, i-1]) {
-                            d1PointsID = gameBoard[i,i];
+                if (i > 0)
+                {
+                    if (gameBoard[i, i] > 0)
+                    {
+                        if (gameBoard[i, i] == gameBoard[i - 1, i - 1])
+                        {
+                            d1PointsID = gameBoard[i, i];
                             d1Points += 1;
-                        } else {
+                        }
+                        else
+                        {
                             d1Points = 1;
                         }
 
@@ -151,13 +148,17 @@ namespace XO.Core {
                             return;
                         }
                     }
-                    
+
                     invertedI = boardSize - 1 - i;
-                    if (gameBoard[i, invertedI] > 0) {
-                        if (gameBoard [i, invertedI] == gameBoard[i-1, invertedI + 1]) {
+                    if (gameBoard[i, invertedI] > 0)
+                    {
+                        if (gameBoard[i, invertedI] == gameBoard[i - 1, invertedI + 1])
+                        {
                             d2PointsID = gameBoard[i, invertedI];
                             d2Points += 1;
-                        } else {
+                        }
+                        else
+                        {
                             d2Points = 1;
                         }
 
@@ -192,30 +193,22 @@ namespace XO.Core {
             }
 
             // no moves left - game ended
-            if (!movesLeft) {
+            if (!movesLeft)
+            {
                 GameHandler.Instance.DrawGame();
             }
         }
 
-        public void AIMove() {
+        public void AIMove()
+        {
             UpdateGameBoardData();
-            
+
             if (freeSpaces.Count < 1) { return; }
 
             // get random empty position button index
             int idx = freeSpaces[UnityEngine.Random.Range((int)0, (int)freeSpaces.Count)];
             // activate position button
             buttonList[idx].AIActivateButton();
-
-            // // will lead to longer waiting 4 AI the longer the game progresses  (heavy performance hit if used)
-            // int idx = -1;
-            // while (!spaceFree) {
-
-            // idx = UnityEngine.Random.Range((int)0, (int)GameHandler.Instance.PlayerNo);
-            // if (buttonList[idx].IsButtonEnabled) {
-            //     buttonList[idx].ActivateButton();
-            // }
-            // }
         }
 
         public void HintMove()
@@ -232,7 +225,8 @@ namespace XO.Core {
             buttonList[idx].ActivateHintButton();
         }
 
-        private void EnableButton(uint buttonID) {
+        private void EnableButton(uint buttonID)
+        {
             buttonList[buttonID].EnableButton();
         }
     }

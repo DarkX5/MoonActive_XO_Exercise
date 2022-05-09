@@ -12,20 +12,26 @@ public class SceneController : MonoBehaviour
     [SerializeField] string PVPGameScene = null;
     [SerializeField] string PVEGameScene = null;
 
-    private void Awake() {
-        if (Instance == null) {
+    private void Awake()
+    {
+        if (Instance == null)
+        {
             Instance = this;
-        } else {
-            // Destroy(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
     }
     // called from UI (GAME END Mask Canvas)
-    public void LoadMainMenuScene() {
+    public void LoadMainMenuScene()
+    {
         SceneManager.LoadSceneAsync(mainMenuScene);
     }
     // called from UI (Main Menu scene)
-    public void LoadPVPGameScene() {
+    public void LoadPVPGameScene()
+    {
         SceneManager.LoadSceneAsync(PVPGameScene);
     }
     // called from UI (Main Menu scene)
@@ -39,7 +45,8 @@ public class SceneController : MonoBehaviour
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
     // called from UI (Main Menu scene)
-    public void ExitGame() {
+    public void ExitGame()
+    {
         Application.Quit();
     }
 }

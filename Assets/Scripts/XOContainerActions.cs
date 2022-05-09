@@ -5,11 +5,10 @@ using XO.Core;
 
 public class XOContainerActions : MonoBehaviour
 {
-    /* TODO - remove [SerializeField] - used 4 Debugging */
-    [SerializeField] private Image buttonImage;
-    [SerializeField] private Button button;
-    [SerializeField] private uint playerID = 0;
-    [SerializeField] private uint buttonID;
+    private Image buttonImage;
+    private Button button;
+    private uint playerID = 0;
+    private uint buttonID;
 
     public bool? IsButtonEnabled { get { return button?.enabled; } }
 
@@ -29,9 +28,11 @@ public class XOContainerActions : MonoBehaviour
     }
 
     // called from UI by player
-    public void ActivateButton() {
+    public void ActivateButton()
+    {
         if (!GameHandler.Instance.IsPlayerActive) { return; }
-        if (button == null) {
+        if (button == null)
+        {
             // cache button
             button = GetComponentInChildren<Button>();
         }
@@ -40,7 +41,8 @@ public class XOContainerActions : MonoBehaviour
         button.enabled = false;
         GameHandler.Instance.AddMove(buttonID);
 
-        if (buttonImage == null) {
+        if (buttonImage == null)
+        {
             // cache image
             buttonImage = button.image;
         }
@@ -50,10 +52,13 @@ public class XOContainerActions : MonoBehaviour
         buttonImage.sprite = DataLoader.Instance.GetCurrentPlayerIcon((int)GameHandler.Instance.CurrentPlayer);
         buttonImage.color = Color.white;
 
-        if (GameHandler.Instance.FastTurns) {
+        if (GameHandler.Instance.FastTurns)
+        {
             GameHandler.Instance.EndTurn();
             GameHandler.Instance.NextTurn();
-        } else {
+        }
+        else
+        {
             // call end Turn
             GameHandler.Instance.EndTurn();
         }
@@ -94,7 +99,8 @@ public class XOContainerActions : MonoBehaviour
         buttonImage.sprite = DataLoader.Instance.GetCurrentPlayerIcon((int)GameHandler.Instance.CurrentPlayer);
         buttonImage.color = Color.gray;
     }
-    public void DeactivateHintButton() {
+    public void DeactivateHintButton()
+    {
         if (playerID > 0) { return; }
         buttonImage.sprite = null;
         buttonImage.color = new Color(1f, 1f, 1f, 0f);
@@ -104,14 +110,16 @@ public class XOContainerActions : MonoBehaviour
         GameHandler.Instance.AddMove(buttonID);
     }
 
-    public void EnableButton() {
+    public void EnableButton()
+    {
         playerID = 0;
         buttonImage.color = new Color(1f, 1f, 1f, 0f);
         buttonImage.sprite = null;
         button.enabled = true;
     }
 
-    public void SetMoveID(uint newMoveID) {
+    public void SetMoveID(uint newMoveID)
+    {
         buttonID = newMoveID;
     }
 }
