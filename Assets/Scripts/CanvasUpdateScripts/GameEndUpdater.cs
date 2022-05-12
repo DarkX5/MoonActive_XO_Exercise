@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using XO.Core;
 
-public class GameWonUpdater : MonoBehaviour
+public class GameEndUpdater : MonoBehaviour
 {
-    private Canvas gameWonCanvas;
-    private GameObject winImage;
-    private Text winningPlayerIDText;
+    [SerializeField] private Canvas gameWonCanvas;
+    [SerializeField] private GameObject winImage;
+    [SerializeField] private Text winningPlayerIDText;
+
+    [Tooltip("Not needed - Setup for extra performance & to no longer be dependand on positioning")]
+    [SerializeField] private GameObject drawImage;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +34,7 @@ public class GameWonUpdater : MonoBehaviour
         winningPlayerIDText.color = DataLoader.Instance.PlayerColors[(int)(winnerID)];
 
         winImage.SetActive(true);
+        drawImage?.SetActive(false);
         gameWonCanvas.enabled = true;
     }
     private void ActivateGameDraw()
@@ -39,6 +43,7 @@ public class GameWonUpdater : MonoBehaviour
         winningPlayerIDText.color = Color.gray;
 
         winImage.SetActive(false);
+        drawImage?.SetActive(true);
         gameWonCanvas.enabled = true;
     }
 }
