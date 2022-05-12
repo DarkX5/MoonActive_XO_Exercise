@@ -5,5 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerColor", menuName = "ScriptableObjects/PlayerColor")]
 public class PlayerColor : ScriptableObject
 {
-    public Color playerColor = Color.white;
+    [SerializeField] private Color playerColor = Color.white;
+
+    public Color PlayerColorValue { get { return playerColor; } }
 }

@@ -14,7 +14,6 @@ public class PlayerTurnTimer : MonoBehaviour
     [SerializeField] private Color timeLeft1ThirdTextColor = Color.red;
 
     public static event Action<float, Color> onTimerChange = null;
-    public static event Action onPlayerTimerEnd = null;
 
     IEnumerator tempCO = null;
     private float timeLeft = 5f;

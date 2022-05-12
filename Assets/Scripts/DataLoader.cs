@@ -43,7 +43,7 @@ namespace XO.Core
             else
             {
                 Instance = this;
-                DontDestroyOnLoad(this);
+                DontDestroyOnLoad(gameObject);
             }
         }
 
@@ -61,12 +61,12 @@ namespace XO.Core
             {
                 for (int i = 0; i < playerNo; i += 1)
                 {
-                    playerColors[i] = colorList[i].playerColor;
+                    playerColors[i] = colorList[i].PlayerColorValue;
                 }
             }
             else
             {
-                Debug.Log("fallback");
+                Debug.LogWarning("No Player Colors defined - Color fallback (random colors)");
                 // fallback in case of missing data/resources
                 for (int i = 0; i < playerNo; i += 1)
                 {
