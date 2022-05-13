@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 // using UnityEngine.UI;
+// using XO.Core;
 
 namespace XO.Core
 {
@@ -24,6 +25,9 @@ namespace XO.Core
         private uint boardSize;
         private uint minWinPoints;
         private bool hintUsed = false;
+
+        public uint BoardSize { get { return boardSize; } }
+        public uint[,] GameBoard { get { return gameBoard; } }
 
         private void Awake() {
             if (Instance == null) {

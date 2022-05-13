@@ -28,7 +28,7 @@ namespace XO.Core
         [SerializeField][Range(0.1f, 5f)] private float startUpdateFrequency = 0.25f;
 
         [Header("----------------- Auto-Set")]
-        [SerializeField] private PlayerTypes[] playerTypes = null;
+        // [SerializeField] private PlayerTypes[] playerTypes = null;
         [SerializeField] private List<uint> movesList = null;
 
         /*v TODO - implement variable board size v*/
@@ -51,6 +51,7 @@ namespace XO.Core
         public bool IsPlayerActive { get { return (playerList?[currentPlayer].GetPlayerType() == PlayerTypes.Player); } }
         // public bool IsPlayerActive { get { return (!enableEnemyAI) || (enableEnemyAI && currentPlayer != aiEnemyPlayer); } }
         public bool FastTurns { get { return fastTurns; } }
+        public bool GameEnded { get { return gameEnded; } }
         private void Awake()
         {
             if (!Instance)
@@ -83,9 +84,6 @@ namespace XO.Core
         {
             currentPlayer = 0;
             turn = 1;
-
-            /*v TODO - remove next 1 line - only 4 debugging v*/
-            playerTypes = DataLoader.Instance.PlayerTypesList;
 
             // get player List
             playerList = DataLoader.Instance.PlayerList;

@@ -8,30 +8,6 @@ using UnityEngine.TestTools;
 public class EditorTestScript
 {
     /*v TODO - implement v*/
-    [Test]
-    public void TestHint()
-    {
-    }
-
-    [Test]
-    public void TestUndo()
-    {
-    }
-
-    [Test]
-    public void TestWin()
-    {
-    }
-
-    [Test]
-    public void TestLose()
-    {
-    }
-
-    [Test]
-    public void TestDraw()
-    {
-    }
 
     [Test]
     public void TestScenesAddedToBuild() {
