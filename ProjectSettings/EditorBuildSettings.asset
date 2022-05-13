@@ -9,9 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/_MainMenu.unity
     guid: 3bf04ede598c0074090b3c3a686a316a
   - enabled: 1
-    path: Assets/Scenes/_PVP_GameScene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
-    path: Assets/Scenes/_PVE_GameScene.unity
-    guid: 68212ce2519cb3445af157d984060a99
+    path: Assets/Scenes/_GameScene.unity
+    guid: d03734203c06831489567fe966db4def
   m_configObjects: {}

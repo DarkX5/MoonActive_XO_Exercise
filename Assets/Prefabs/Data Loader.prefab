@@ -47,7 +47,7 @@ MonoBehaviour:
   gameButtonClickSFX: {fileID: 8300000, guid: 19756982cc7f8934a9f45e4955d91adf, type: 3}
   victorySFX: {fileID: 8300000, guid: 4761ff81ef06d704aad5cb26c785163f, type: 3}
   drawSFX: {fileID: 8300000, guid: 05389a61eff3dfc40a188002c78d8979, type: 3}
-  playerNo: 2
+  playerTypesList: 0000000000000000
   playerColors: []
   playerIcons: []
   horizontalStrikeoutSprite: {fileID: 0}

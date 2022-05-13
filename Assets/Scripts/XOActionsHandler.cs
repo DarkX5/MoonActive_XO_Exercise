@@ -13,6 +13,7 @@ namespace XO.Core
     }
     public class XOActionsHandler : MonoBehaviour
     {
+        public static XOActionsHandler Instance { get; private set; }
         public static event Action<WinType, int> onWinningStreak = null;
 
         private XOContainerActions[] buttonList = null;
@@ -25,7 +26,14 @@ namespace XO.Core
         private uint minWinPoints;
         private bool hintUsed = false;
 
-        void Start()
+        private void Awake() {
+            if (Instance == null) {
+                Instance = this;
+            } else {
+                Destroy(gameObject);
+            }
+        }
+        private void Start()
         {
             // get game data
             boardSize = GameHandler.Instance.BoardSize;
@@ -43,15 +51,15 @@ namespace XO.Core
 
             // subscribe to turn end event
             GameHandler.onEndTurn += CheckValues;
-            GameHandler.onMoveAI += AIMove;
             GameHandler.onUndoTurn += EnableButton;
+            // GameHandler.onMoveAI += AIMove;
         }
         private void OnDestroy()
         {
             // unsubscribe to turn end event
             GameHandler.onEndTurn -= CheckValues;
-            GameHandler.onMoveAI -= AIMove;
             GameHandler.onUndoTurn -= EnableButton;
+            // GameHandler.onMoveAI -= AIMove;
         }
 
         private void UpdateGameBoardData()
@@ -75,6 +83,7 @@ namespace XO.Core
                     {
                         // clear previous hint
                         buttonList[idx].DeactivateHintButton();
+                        hintUsed = false;
                     }
                 }
             }
@@ -199,16 +208,24 @@ namespace XO.Core
             }
         }
 
-        public void AIMove()
-        {
+        public List<int> GetValidMoves() {
             UpdateGameBoardData();
 
-            if (freeSpaces.Count < 1) { return; }
+            return freeSpaces;
+        }
 
-            // get random empty position button index
-            int idx = freeSpaces[UnityEngine.Random.Range((int)0, (int)freeSpaces.Count)];
+        public void Move(int idx) {
             // activate position button
             buttonList[idx].AIActivateButton();
+        }
+        public void MoveWithDelay(int idx, float moveDelay) {
+            // activate position button with delay
+            StartCoroutine(MoveAIWithDelayCO(idx, moveDelay));
+        }
+        IEnumerator MoveAIWithDelayCO(int idx, float moveDelay) {
+            yield return new WaitForSeconds(moveDelay);
+                // activate position button
+                buttonList[idx].AIActivateButton();
         }
 
         public void HintMove()
@@ -225,9 +242,9 @@ namespace XO.Core
             buttonList[idx].ActivateHintButton();
         }
 
-        private void EnableButton(uint buttonID)
+        private void EnableButton(uint buttonIdx)
         {
-            buttonList[buttonID].EnableButton();
+            buttonList[buttonIdx].EnableButton();
         }
     }
 }

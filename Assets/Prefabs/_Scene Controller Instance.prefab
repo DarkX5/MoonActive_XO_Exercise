@@ -44,5 +44,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenuScene: _MainMenu
+  gameScene: _GameScene
   PVPGameScene: _PVP_GameScene
   PVEGameScene: _PVE_GameScene

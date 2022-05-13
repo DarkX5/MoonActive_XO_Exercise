@@ -17,7 +17,7 @@ namespace XO.Core
         [SerializeField] private AudioClip victorySFX = null;
         [SerializeField] private AudioClip drawSFX = null;
         [Header("Player Customization")]
-        [SerializeField][Range(2, 10)] private uint playerNo = 2;
+        [SerializeField] private PlayerTypes[] playerTypesList;
         [SerializeField] private Color[] playerColors = null;
         [SerializeField] private Sprite[] playerIcons = null;
         [Header("UI Customizations")]
@@ -25,6 +25,10 @@ namespace XO.Core
         private bool isAllDataLoaded = false;
         private Image auxImage;
         private Texture2D auxTex;
+        private uint playerNo = 2;
+        private PlayerController[] playerList = null;
+        [SerializeField] private bool hintsActive = false;
+
         public Color[] PlayerColors { get { return playerColors; } }
         public Sprite GetCurrentPlayerIcon(int playerIconIdx) { return playerIcons[playerIconIdx]; }
         public Sprite HorizontalStrikeoutSprite { get { return horizontalStrikeoutSprite; } }
@@ -34,6 +38,9 @@ namespace XO.Core
         public AudioClip DrawSFX { get { return drawSFX; } }
         public bool IsDataLoaded { get { return isAllDataLoaded; } }
         public uint PlayerNo { get { return playerNo; } }
+        public PlayerController[] PlayerList { get { return playerList; } }
+        public PlayerTypes[] PlayerTypesList { get { return playerTypesList; } }
+        public bool HintsActive { get { return hintsActive; } }
         private void Awake()
         {
             if (Instance != null)
@@ -88,6 +95,7 @@ namespace XO.Core
             url = $"{Application.streamingAssetsPath}/MoonActive/Line.png";
             GetSpriteStrikeoutImageFromURL(url);
         }
+
         private void GetPlayerSpriteIconFromURL(int idx, string url)
         {
             StartCoroutine(ImageRequest(url, (UnityWebRequest req) =>
@@ -149,6 +157,40 @@ namespace XO.Core
                     isAllDataLoaded = false;
                 }
             }
+        }
+        private void SetupPlayersList()
+        {
+            hintsActive = false;
+
+            bool playerActive = false, aiActive = false;
+            playerNo = (uint)playerTypesList.Length;
+            playerList = new PlayerController[playerNo];
+
+            // setup player list
+            for (int i = 0; i < playerTypesList.Length; i += 1)
+            {
+                switch (playerTypesList[i])
+                {
+                    case PlayerTypes.Player:
+                        playerList[i] = new PlayerController();
+                        playerActive = true;
+                        break;
+                    case PlayerTypes.AI:
+                        playerList[i] = new AIController();
+                        aiActive = true;
+                        break;
+                }
+            }
+            
+            if (playerActive == true && aiActive == true) {
+                hintsActive = true;
+            }
+        }
+        
+        // called from UI
+        public void SetGamePlayers(PlayerTypes[] newPlayerTypes) {
+            playerTypesList = newPlayerTypes;
+            SetupPlayersList();
         }
     }
 }

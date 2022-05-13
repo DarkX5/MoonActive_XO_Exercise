@@ -14,18 +14,21 @@ namespace XO.Core
         public static event Action<uint> onEndTurn;
         // UI updates
         public static event Action<uint> onGameEnd;
+        public static event Action onGameStart;
         public static event Action onGameDraw;
         // AI Moves
-        public static event Action onMoveAI;
+        // public static event Action onMoveAI;
         public static event Action<uint> onUndoTurn;
         public static event Action<uint> onGameButtonMove = null;
 
-        [Header("Settings")]
-        [SerializeField] private bool enableEnemyAI = false;
+        [Header("----------------- Settings")]
+        // [SerializeField] private bool enableEnemyAI = false;
         [SerializeField] private bool fastTurns = false;
+        [SerializeField] private bool randomStartOrder = true;
         [SerializeField][Range(0.1f, 5f)] private float startUpdateFrequency = 0.25f;
 
-        [Header("Auto-Set")]
+        [Header("----------------- Auto-Set")]
+        [SerializeField] private PlayerTypes[] playerTypes = null;
         [SerializeField] private List<uint> movesList = null;
 
         /*v TODO - implement variable board size v*/
@@ -34,17 +37,19 @@ namespace XO.Core
         [SerializeField][Range(3, 100)] private uint minWinPoints = 3;
 
         private uint playerNo = 2;
+        private PlayerController[] playerList = null;
         private uint turn = 1;
         private uint currentPlayer = 0;
-        private uint aiEnemyPlayer = 1;
-        private bool aiMovesFirst;
+        // private uint aiEnemyPlayer = 1;
+        // private bool aiMovesFirst;
         private bool gameEnded = false;
 
         public uint PlayerNo { get { return playerNo; } }
         public uint BoardSize { get { return boardSize; } }
         public uint MinWinPoints { get { return minWinPoints; } }
         public uint CurrentPlayer { get { return currentPlayer; } }
-        public bool IsPlayerActive { get { return (!enableEnemyAI) || (enableEnemyAI && currentPlayer != aiEnemyPlayer); } }
+        public bool IsPlayerActive { get { return (playerList?[currentPlayer].GetPlayerType() == PlayerTypes.Player); } }
+        // public bool IsPlayerActive { get { return (!enableEnemyAI) || (enableEnemyAI && currentPlayer != aiEnemyPlayer); } }
         public bool FastTurns { get { return fastTurns; } }
         private void Awake()
         {
@@ -56,6 +61,7 @@ namespace XO.Core
 
         void Start()
         {
+            onGameStart?.Invoke();
             movesList = new List<uint>();
             StartCoroutine(StartGameAfterDataLoadCO());
         }
@@ -64,7 +70,6 @@ namespace XO.Core
             yield return new WaitForSeconds(startUpdateFrequency);
             if (DataLoader.Instance.IsDataLoaded)
             {
-                playerNo = DataLoader.Instance.PlayerNo;
                 StartNewGame();
             }
             else
@@ -79,15 +84,27 @@ namespace XO.Core
             currentPlayer = 0;
             turn = 1;
 
-            if (enableEnemyAI)
-            {
-                aiMovesFirst = (UnityEngine.Random.Range((int)0, (int)100) > 50);
-                if (aiMovesFirst == true)
-                {
-                    aiEnemyPlayer = 0;
-                    onMoveAI?.Invoke();
+            /*v TODO - remove next 1 line - only 4 debugging v*/
+            playerTypes = DataLoader.Instance.PlayerTypesList;
+
+            // get player List
+            playerList = DataLoader.Instance.PlayerList;
+            playerNo = (uint)playerList.Length;
+            
+            if (randomStartOrder) {
+                // randomize player list order
+                int randIdx = 0;
+                for(int i = 0; i < playerList.Length; i += 1) {
+                    randIdx = UnityEngine.Random.Range((int)0, (int)playerList.Length);
+                    if (randIdx != i) {
+                        var auxPC = playerList[randIdx];
+                        playerList[randIdx] = playerList[i];
+                        playerList[i] = auxPC;
+                    }
                 }
             }
+            
+            playerList[currentPlayer].Move();
         }
 
         public void TimeEndGame()
@@ -132,16 +149,19 @@ namespace XO.Core
             if (gameEnded) { return; }
 
             onNextTurn?.Invoke(turn);
-            if (enableEnemyAI && currentPlayer == aiEnemyPlayer)
-            {
-                onMoveAI?.Invoke();
-            }
+
+            playerList[currentPlayer].Move();
+            // if (enableEnemyAI && currentPlayer == aiEnemyPlayer)
+            // {
+            //     onMoveAI?.Invoke();
+            // }
         }
 
         // called from UI (button on-click event)
         public void UndoLastMove()
         {
-            if (movesList == null || movesList.Count < 1 || !enableEnemyAI || currentPlayer == aiEnemyPlayer) { return; }
+            if (movesList == null || movesList.Count < 1 || playerList[currentPlayer].GetPlayerType() != PlayerTypes.Player) { return; }
+            // if (movesList == null || movesList.Count < 1 || !enableEnemyAI || currentPlayer == aiEnemyPlayer) { return; }
 
             turn -= 2;
             if (turn < 1)

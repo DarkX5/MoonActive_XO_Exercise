@@ -317,7 +317,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonClickSFX: {fileID: 0}
   gameButtonClickSFX: {fileID: 0}
-  playerNo: 0
+  victorySFX: {fileID: 0}
+  drawSFX: {fileID: 0}
+  playerTypesList: 
   playerColors: []
   playerIcons: []
   horizontalStrikeoutSprite: {fileID: 0}

@@ -5,9 +5,10 @@ using XO.Core;
 
 public class XOContainerActions : MonoBehaviour
 {
+    [Header("4 debugging")]
     private Image buttonImage;
     private Button button;
-    private uint playerID = 0;
+    [SerializeField] private uint playerID = 0;
     private uint buttonID;
 
     public bool? IsButtonEnabled { get { return button?.enabled; } }
@@ -52,6 +53,7 @@ public class XOContainerActions : MonoBehaviour
         buttonImage.sprite = DataLoader.Instance.GetCurrentPlayerIcon((int)GameHandler.Instance.CurrentPlayer);
         buttonImage.color = Color.white;
 
+        // call end Turn
         if (GameHandler.Instance.FastTurns)
         {
             GameHandler.Instance.EndTurn();
@@ -59,12 +61,9 @@ public class XOContainerActions : MonoBehaviour
         }
         else
         {
-            // call end Turn
             GameHandler.Instance.EndTurn();
         }
     }
-
-    // called from UI
     public void AIActivateButton()
     {
         if (button == null)
@@ -88,8 +87,16 @@ public class XOContainerActions : MonoBehaviour
         buttonImage.sprite = DataLoader.Instance.GetCurrentPlayerIcon((int)GameHandler.Instance.CurrentPlayer);
         buttonImage.color = Color.white;
 
-        GameHandler.Instance.EndTurn();
-        GameHandler.Instance.NextTurn();
+        // call end Turn
+        if (GameHandler.Instance.FastTurns)
+        {
+            GameHandler.Instance.EndTurn();
+            GameHandler.Instance.NextTurn();
+        }
+        else
+        {
+            GameHandler.Instance.EndTurn();
+        }
     }
 
     // called from UI
