@@ -53,9 +53,12 @@ namespace XO.Core
                 DontDestroyOnLoad(gameObject);
             }
         }
+        private void Start() {
+            Init();
+        }
 
         // Start is called before the first frame update
-        void Start()
+        public void Init()
         {
             // create icon array
             playerIcons = new Sprite[playerNo];

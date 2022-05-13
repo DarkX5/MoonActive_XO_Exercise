@@ -36,7 +36,10 @@ namespace XO.Core
                 Destroy(gameObject);
             }
         }
-        private void Start()
+        private void Start() {
+            Init();
+        }
+        public void Init()
         {
             // get game data
             boardSize = GameHandler.Instance.BoardSize;
@@ -75,6 +78,9 @@ namespace XO.Core
                 {
                     idx = (int)(i * boardSize) + j;
                     gameBoard[i, j] = buttonList[idx].PlayerID;
+
+                    // game ended - exit early
+                    if (buttonList[idx] == null) { return; }
 
                     // get empty positions
                     if (buttonList[idx].IsButtonEnabled != false)
@@ -217,10 +223,19 @@ namespace XO.Core
         }
 
         public void Move(int idx) {
+            UpdateGameBoardData();
+            if (freeSpaces.Count < 1) { return; }
+
+            // game ended - exit early
+            if (buttonList[idx] == null) { return; }
+
             // activate position button
             buttonList[idx].AIActivateButton();
         }
         public void MoveWithDelay(int idx, float moveDelay) {
+            UpdateGameBoardData();
+            if (freeSpaces.Count < 1) { return; }
+
             // activate position button with delay
             StartCoroutine(MoveAIWithDelayCO(idx, moveDelay));
         }

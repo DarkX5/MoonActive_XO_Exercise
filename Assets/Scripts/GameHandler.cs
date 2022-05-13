@@ -43,11 +43,13 @@ namespace XO.Core
         // private uint aiEnemyPlayer = 1;
         // private bool aiMovesFirst;
         private bool gameEnded = false;
+        private int winnerIdx = -1;
 
         public uint PlayerNo { get { return playerNo; } }
         public uint BoardSize { get { return boardSize; } }
         public uint MinWinPoints { get { return minWinPoints; } }
         public uint CurrentPlayer { get { return currentPlayer; } }
+        public uint TurnNo { get { return turn; } }
         public bool IsPlayerActive { get { return (playerList?[currentPlayer].GetPlayerType() == PlayerTypes.Player); } }
         // public bool IsPlayerActive { get { return (!enableEnemyAI) || (enableEnemyAI && currentPlayer != aiEnemyPlayer); } }
         public bool FastTurns { get { return fastTurns; } }
@@ -60,7 +62,11 @@ namespace XO.Core
                 Destroy(Instance);
         }
 
-        void Start()
+        private void Start() {
+            Init();
+        }
+
+        public void Init()
         {
             onGameStart?.Invoke();
             movesList = new List<uint>();
@@ -110,20 +116,24 @@ namespace XO.Core
             gameEnded = true;
             if (currentPlayer < 1)
             {
+                winnerIdx = (int)playerNo - 1;
                 onGameEnd?.Invoke(playerNo - 1);
             }
             else
             {
+                winnerIdx = (int)currentPlayer - 1;
                 onGameEnd?.Invoke(currentPlayer - 1);
             }
         }
         public void WinGame(uint winningPlayerID)
         {
+            winnerIdx = (int)winningPlayerID - 1;
             gameEnded = true;
             onGameEnd?.Invoke(winningPlayerID - 1);
         }
         public void DrawGame()
         {
+            winnerIdx = -1;
             gameEnded = true;
             onGameDraw?.Invoke();
         }

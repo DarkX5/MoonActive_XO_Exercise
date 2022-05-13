@@ -13,9 +13,14 @@ public class GameEndUpdater : MonoBehaviour
     [Tooltip("Not needed - Setup for extra performance & to no longer be dependand on positioning")]
     [SerializeField] private GameObject drawImage;
 
+    private bool isCanvasActive = false;
+
+    public bool IsCanvasActive { get { return isCanvasActive; } }
+
     // Start is called before the first frame update
     void Start()
     {
+        isCanvasActive = false;
         gameWonCanvas = GetComponent<Canvas>();
         gameWonCanvas.enabled = false;
 
@@ -30,6 +35,7 @@ public class GameEndUpdater : MonoBehaviour
     }
     private void ActivateGameWon(uint winnerID)
     {
+        isCanvasActive = true;
         winningPlayerIDText.text = (winnerID + 1).ToString();
         winningPlayerIDText.color = DataLoader.Instance.PlayerColors[(int)(winnerID)];
 
@@ -39,6 +45,7 @@ public class GameEndUpdater : MonoBehaviour
     }
     private void ActivateGameDraw()
     {
+        isCanvasActive = true;
         winningPlayerIDText.text = "-";
         winningPlayerIDText.color = Color.gray;
 
