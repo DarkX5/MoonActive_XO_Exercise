@@ -10,11 +10,13 @@ public class XOContainerActions : MonoBehaviour
     private Button button;
     [SerializeField] private uint playerID = 0;
     private uint buttonID;
+    private bool hintActivated = false;
 
     public bool? IsButtonEnabled { get { return button?.enabled; } }
 
     public uint PlayerID { get { return playerID; } }
     public uint ButtonID { get { return buttonID; } }
+    public bool HintActivated { get { return hintActivated; } }
 
     // Start is called before the first frame update
     void Start()
@@ -102,13 +104,14 @@ public class XOContainerActions : MonoBehaviour
     // called from UI
     public void ActivateHintButton()
     {
+        hintActivated = true;
         // set button image in "hint" state
         buttonImage.sprite = DataLoader.Instance.GetCurrentPlayerIcon((int)GameHandler.Instance.CurrentPlayer);
         buttonImage.color = Color.gray;
     }
     public void DeactivateHintButton()
     {
-        if (playerID > 0) { return; }
+        hintActivated = false;
         buttonImage.sprite = null;
         buttonImage.color = new Color(1f, 1f, 1f, 0f);
     }

@@ -1,27 +1,59 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 
 public class EditorTestScript
 {
     /*v TODO - implement v*/
-    // A Test behaves as an ordinary method
     [Test]
-    public void EditorTestScriptSimplePasses()
+    public void TestHint()
     {
-        // Use the Assert class to test conditions
-        // Assert.AreEqual(1, 2);
     }
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    [UnityTest]
-    public IEnumerator EditorTestScriptWithEnumeratorPasses()
+    [Test]
+    public void TestUndo()
     {
-        // Use the Assert class to test conditions.
-        // Use yield to skip a frame.
-        yield return null;
     }
+
+    [Test]
+    public void TestWin()
+    {
+    }
+
+    [Test]
+    public void TestLose()
+    {
+    }
+
+    [Test]
+    public void TestDraw()
+    {
+    }
+
+    [Test]
+    public void TestScenesAddedToBuild() {
+        Assert.AreNotEqual(GetSceneFilePath("_MainMenu"), "");
+        Assert.AreNotEqual(GetSceneFilePath("_GameScene"), "");
+    }
+
+#region  Helpers
+    // Helper to find a scene path
+    static string GetSceneFilePath(string sceneName)
+    {
+        foreach (var scene in EditorBuildSettings.scenes)
+        {
+            if (scene.path.Contains(sceneName))
+            {
+                return scene.path;
+            }
+        }
+
+        // We do not need to do anything fancy here. If the scene has not been found,
+        // it will fail with the empty string and we know something is wrong.
+        return "";
+    }
+#endregion
 }

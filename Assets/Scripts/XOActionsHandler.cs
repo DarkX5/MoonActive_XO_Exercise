@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+// using UnityEngine.UI;
 
 namespace XO.Core
 {
-
     public enum WinType
     {
         Horizontal, Vertical, Diagonal1, Diagonal2
@@ -79,9 +78,8 @@ namespace XO.Core
                         freeSpaces.Add(idx);
                     }
 
-                    if (hintUsed)
-                    {
-                        // clear previous hint
+                    // clear previous hint
+                    if (buttonList[idx].HintActivated) {
                         buttonList[idx].DeactivateHintButton();
                         hintUsed = false;
                     }
@@ -228,18 +226,35 @@ namespace XO.Core
                 buttonList[idx].AIActivateButton();
         }
 
+        // called from UI
         public void HintMove()
         {
+            int idx = GetHintPosition();
+            if (idx > -1) {
+                // activate position button
+                buttonList[idx].ActivateHintButton();
+            }
+            // return hintOk;
+            // hintUsed = true;
+            // UpdateGameBoardData();
+
+            // if (freeSpaces.Count < 1) { return; }
+
+            // // get random empty position button index
+            // int idx = freeSpaces[UnityEngine.Random.Range((int)0, (int)freeSpaces.Count)];
+
+            // // activate position button
+            // buttonList[idx].ActivateHintButton();
+        }
+
+        public int GetHintPosition() {
             hintUsed = true;
             UpdateGameBoardData();
 
-            if (freeSpaces.Count < 1) { return; }
+            if (freeSpaces.Count < 1) { return -1; }
 
             // get random empty position button index
-            int idx = freeSpaces[UnityEngine.Random.Range((int)0, (int)freeSpaces.Count)];
-
-            // activate position button
-            buttonList[idx].ActivateHintButton();
+            return freeSpaces[UnityEngine.Random.Range((int)0, (int)freeSpaces.Count)];
         }
 
         private void EnableButton(uint buttonIdx)
