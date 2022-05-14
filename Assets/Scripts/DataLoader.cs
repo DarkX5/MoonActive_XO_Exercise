@@ -99,6 +99,10 @@ namespace XO.Core
             GetSpriteStrikeoutImageFromURL(url);
         }
 
+        private void LoadAssetBundle() {
+            
+        }
+
         private void GetPlayerSpriteIconFromURL(int idx, string url)
         {
             StartCoroutine(ImageRequest(url, (UnityWebRequest req) =>
