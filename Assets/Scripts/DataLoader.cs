@@ -99,8 +99,25 @@ namespace XO.Core
             GetSpriteStrikeoutImageFromURL(url);
         }
 
-        private void LoadAssetBundle() {
-            
+        private IEnumerator LoadAssetBundle(string assetBundleName, string objectNameToLoad) {
+            string filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "AssetBundles");
+            filePath = System.IO.Path.Combine(filePath, assetBundleName);
+
+            //Load "animals" AssetBundle
+            var assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(filePath);
+            yield return assetBundleCreateRequest;
+
+            AssetBundle asseBundle = assetBundleCreateRequest.assetBundle;
+
+            //Load the "dog" Asset (Use Texture2D since it's a Texture. Use GameObject if prefab)
+            AssetBundleRequest asset = asseBundle.LoadAssetAsync<Texture2D>(objectNameToLoad);
+            yield return asset;
+
+            //Retrieve the object (Use Texture2D since it's a Texture. Use GameObject if prefab)
+            Texture2D loadedAsset = asset.asset as Texture2D;
+
+            // //Do something with the loaded loadedAsset  object (Load to RawImage for example) 
+            // image.texture = loadedAsset;
         }
 
         private void GetPlayerSpriteIconFromURL(int idx, string url)

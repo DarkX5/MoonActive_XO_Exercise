@@ -24,7 +24,7 @@ namespace XO.Core
         List<int> freeSpaces = new List<int>();
         private uint boardSize;
         private uint minWinPoints;
-        private bool hintUsed = false;
+        // private bool hintUsed = false;
 
         public uint BoardSize { get { return boardSize; } }
         public uint[,] GameBoard { get { return gameBoard; } }
@@ -91,7 +91,7 @@ namespace XO.Core
                     // clear previous hint
                     if (buttonList[idx].HintActivated) {
                         buttonList[idx].DeactivateHintButton();
-                        hintUsed = false;
+                        // hintUsed = false;
                     }
                 }
             }
@@ -267,7 +267,7 @@ namespace XO.Core
         }
 
         public int GetHintPosition() {
-            hintUsed = true;
+            // hintUsed = true;
             UpdateGameBoardData();
 
             if (freeSpaces.Count < 1) { return -1; }
