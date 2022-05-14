@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using XO.Core;
@@ -11,8 +9,6 @@ public class SceneController : MonoBehaviour
     [Header("Scenes")]
     [SerializeField] string mainMenuScene = null;
     [SerializeField] string gameScene = null;
-    // [SerializeField] string PVPGameScene = null;
-    // [SerializeField] string PVEGameScene = null;
 
     private void Awake()
     {
@@ -31,30 +27,24 @@ public class SceneController : MonoBehaviour
     {
         SceneManager.LoadSceneAsync(mainMenuScene);
     }
-    // public void LoadGameScene(PlayerTypes[] players) {
-    //     DataLoader.Instance.SetGamePlayers(players);
-    //     SceneManager.LoadSceneAsync(gameScene);
-    // }
+
     // called from UI (Main Menu scene)
     public void LoadPVPGameScene()
     {
         DataLoader.Instance.SetGamePlayers(new PlayerTypes[] { PlayerTypes.Player, PlayerTypes.Player });
         SceneManager.LoadSceneAsync(gameScene);
-        // SceneManager.LoadSceneAsync(PVPGameScene);
     }
     // called from UI (Main Menu scene)
     public void LoadPVEGameScene()
     {
-        DataLoader.Instance.SetGamePlayers(new PlayerTypes[] {PlayerTypes.Player, PlayerTypes.AI});
+        DataLoader.Instance.SetGamePlayers(new PlayerTypes[] { PlayerTypes.Player, PlayerTypes.AI });
         SceneManager.LoadSceneAsync(gameScene);
-        // SceneManager.LoadSceneAsync(PVEGameScene);
     }
     // called from UI (Main Menu scene)
     public void LoadEVEGameScene()
     {
         DataLoader.Instance.SetGamePlayers(new PlayerTypes[] { PlayerTypes.AI, PlayerTypes.AI });
         SceneManager.LoadSceneAsync(gameScene);
-        // SceneManager.LoadSceneAsync(PVEGameScene);
     }
     // called from UI (Main Menu scene)
     public void RestartGame()

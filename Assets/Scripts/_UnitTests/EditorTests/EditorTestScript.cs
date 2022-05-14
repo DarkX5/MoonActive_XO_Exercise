@@ -1,21 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.TestTools;
 
 public class EditorTestScript
 {
-    /*v TODO - implement v*/
-
     [Test]
-    public void TestScenesAddedToBuild() {
+    public void TestScenesAddedToBuild()
+    {
         Assert.AreNotEqual(GetSceneFilePath("_MainMenu"), "");
         Assert.AreNotEqual(GetSceneFilePath("_GameScene"), "");
     }
 
-#region  Helpers
+    #region  Helpers
     // Helper to find a scene path
     static string GetSceneFilePath(string sceneName)
     {
@@ -31,5 +26,5 @@ public class EditorTestScript
         // it will fail with the empty string and we know something is wrong.
         return "";
     }
-#endregion
+    #endregion
 }

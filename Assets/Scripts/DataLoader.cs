@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -12,7 +10,7 @@ namespace XO.Core
     {
         public static DataLoader Instance { get; private set; }
         [Header("Basic Settings")]
-        [SerializeField] private string streamingAssetsGraphicsPath = ""; // "/MoonActive";
+        [SerializeField] private string streamingAssetsGraphicsPath = "";
         [Header("Sound Settings")]
         [SerializeField] private AudioClip buttonClickSFX = null;
         [SerializeField] private AudioClip gameButtonClickSFX = null;
@@ -58,7 +56,8 @@ namespace XO.Core
                 DontDestroyOnLoad(gameObject);
             }
         }
-        private void Start() {
+        private void Start()
+        {
             Init();
         }
 
@@ -106,27 +105,6 @@ namespace XO.Core
             GetSpriteStrikeoutImageFromURL(url);
         }
 
-        private IEnumerator LoadAssetBundle(string assetBundleName, string objectNameToLoad) {
-            string filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "AssetBundles");
-            filePath = System.IO.Path.Combine(filePath, assetBundleName);
-
-            //Load "animals" AssetBundle
-            var assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(filePath);
-            yield return assetBundleCreateRequest;
-
-            AssetBundle asseBundle = assetBundleCreateRequest.assetBundle;
-
-            //Load the "dog" Asset (Use Texture2D since it's a Texture. Use GameObject if prefab)
-            AssetBundleRequest asset = asseBundle.LoadAssetAsync<Texture2D>(objectNameToLoad);
-            yield return asset;
-
-            //Retrieve the object (Use Texture2D since it's a Texture. Use GameObject if prefab)
-            Texture2D loadedAsset = asset.asset as Texture2D;
-
-            // //Do something with the loaded loadedAsset  object (Load to RawImage for example) 
-            // image.texture = loadedAsset;
-        }
-
         private void GetBackgroundSpriteIconFromURL(string url)
         {
             UnityEditor.AssetDatabase.Refresh();
@@ -139,7 +117,7 @@ namespace XO.Core
                     auxTex = DownloadHandlerTexture.GetContent(req);
                     // Save image to game cache
                     bgSprite = Sprite.Create(auxTex, new Rect(0, 0, auxTex.width, auxTex.height), new Vector2(0.5f, 0.5f));
-                    // Debug.Log($"GetBackgroundSpriteIconFromURL: {bgSprite.name} | isNUll {bgSprite == null}");
+
                     bgLoaded = true;
                     CheckIsDataLoaded();
                 }
@@ -159,6 +137,7 @@ namespace XO.Core
                     auxTex = DownloadHandlerTexture.GetContent(req);
                     // Save image to game cache
                     playerIcons[idx] = Sprite.Create(auxTex, new Rect(0, 0, auxTex.width, auxTex.height), new Vector2(0.5f, 0.5f));
+
                     CheckIsDataLoaded();
                 }
                 else
@@ -239,14 +218,16 @@ namespace XO.Core
                         break;
                 }
             }
-            
-            if (playerActive == true && aiActive == true) {
+
+            if (playerActive == true && aiActive == true)
+            {
                 hintsActive = true;
             }
         }
-        
+
         // called from UI
-        public void SetGamePlayers(PlayerTypes[] newPlayerTypes) {
+        public void SetGamePlayers(PlayerTypes[] newPlayerTypes)
+        {
             playerTypesList = newPlayerTypes;
             SetupPlayersList();
         }

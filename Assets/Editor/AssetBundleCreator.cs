@@ -46,13 +46,12 @@ public class AssetBundleCreator : EditorWindow
         // add a space separator between the buttons and controls
         Rect rect = GUILayoutUtility.GetRect(20, 20);
 
-        /*v TODO - add code to build asset pack v*/
         if (GUILayout.Button("Build"))
         {
             BuildAllAssetBundles();
         }
 
-        /*v TODO - remove after testing v*/
+        // load asset bundle and activate both in editorWindow and editor
         if (GUILayout.Button("Load"))
         {
             LoadAssetBundle(assetBundleName);
@@ -60,6 +59,8 @@ public class AssetBundleCreator : EditorWindow
     }
     void BuildAllAssetBundles()
     {
+        ExportResource();
+
         // /*v TODO - fix "No AssetBundle has been set for this build." error v*/
         // AssetBundleBuild[] buildMap = new AssetBundleBuild[] { new AssetBundleBuild() };
         // buildMap[0].assetBundleName = assetBundleName; //$"{assetBundleName}.unity3d";
@@ -77,18 +78,18 @@ public class AssetBundleCreator : EditorWindow
         // // BuildPipeline.BuildAssetBundles("Assets/StreamingAssets", BuildAssetBundleOptions.None, BuildTarget.Android);
         // // BuildPipeline.BuildAssetBundles("Assets/StreamingAssets", BuildAssetBundleOptions.None, BuildTarget.iOS);
 
-        ExportResource();
-
         //Refresh the Project folder
         AssetDatabase.Refresh();
+
+        // load asset as active
+        LoadAssetBundle(assetBundleName);
     }
 
     /*v TODO - deprecated - find better way v*/
     void ExportResource()
     {
-        // Debug.Log(filePath);
         string path = System.IO.Path.Combine(filePath, $"{assetBundleName}.unity3d");
-        // Debug.Log(path);
+
         UnityEngine.Object[] selection = new UnityEngine.Object[] {
                                     xSprite,
                                     oSprite,
@@ -104,7 +105,6 @@ public class AssetBundleCreator : EditorWindow
 
     private void LoadAssetBundle(string assetBundleName)
     {
-        // string filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "AssetBundles");
         var path = System.IO.Path.Combine(filePath, $"{assetBundleName}.unity3d");
 
         //Load AssetBundle
@@ -132,15 +132,21 @@ public class AssetBundleCreator : EditorWindow
         assetBundle.Unload(false);
 
         /*v TODO - remove try catch after fixing the compressed images error given by EncodeToPNG() v*/
-        try {
+        try
+        {
             SaveSpriteToEditorPath(bgSprite, Application.streamingAssetsPath + "/EmptyBG.png");
-        } catch {}
-        try {
+        }
+        catch { }
+        try
+        {
             SaveSpriteToEditorPath(xSprite, Application.streamingAssetsPath + "/PlayerIcon1.png");
-        } catch {} 
-        try {
+        }
+        catch { }
+        try
+        {
             SaveSpriteToEditorPath(oSprite, Application.streamingAssetsPath + "/PlayerIcon2.png");
-        } catch {}
+        }
+        catch { }
     }
 
     /*v TODO - find better way v*/
@@ -148,42 +154,18 @@ public class AssetBundleCreator : EditorWindow
     {
         if (sp == null) { return; }
         string dir = Path.GetDirectoryName(path);
-        if (!Directory.Exists(dir)) {
+        if (!Directory.Exists(dir))
+        {
             Directory.CreateDirectory(dir);
         }
 
         // remove existing file
-        File.Delete(path);
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+        // write new sprite
         File.WriteAllBytes(path, sp.EncodeToPNG());
-        // AssetDatabase.Refresh();
-        // AssetDatabase.Refresh();
-        // var assetFound = AssetDatabase.FindAssets(sp.name, new string[] { "Assets/StreamingAssets" });
-        // if (assetFound.Length > 0)
-        // {
-        //     AssetDatabase.RemoveObjectFromAsset(sp);
-        //     // var ok = AssetDatabase.DeleteAsset($"Assets/{sp.name}.asset");
-        //     Debug.Log($"sp: {sp.name} | ok: {sp}");
-        //     AssetDatabase.SaveAssets();
-        //     // AssetDatabase.AddObjectToAsset(sp, "Assets/StreamingAssets");
-        // }
-
-        // AssetDatabase.Refresh();
-        // AssetDatabase.AddObjectToAsset(sp, "Assets/StreamingAssets");
-        // AssetDatabase.AddObjectToAsset(sp, "Assets/StreamingAssets");
-        // AssetDatabase.SaveAssets();
-        // AssetDatabase.Refresh();
-
-        // AssetDatabase.SaveAssets();
-        // AssetDatabase.Refresh();
-        // TextureImporter ti = AssetImporter.GetAtPath(path) as TextureImporter;
-
-        // ti.spritePixelsPerUnit = sp.pixelsPerUnit;
-        // ti.mipmapEnabled = false;
-        // EditorUtility.SetDirty(sp);
-        // ti.SaveAndReimport();
-
-        // return AssetDatabase.LoadAssetAtPath("Assets/StreamingAssets", typeof(Texture2D)) as Texture2D;
-        // return AssetDatabase.LoadAssetAtPath(path, typeof(Sprite)) as Sprite;
     }
     void DrawOnGUISprite(Texture2D aSprite, int heightIdx)
     {
@@ -199,22 +181,5 @@ public class AssetBundleCreator : EditorWindow
         {
             EditorGUI.DrawPreviewTexture(new Rect(100, heightIdx * 100, spriteW, spriteH), aSprite);
         }
-
-        // Rect c = aSprite.rect;
-        // Debug.Log($"rect: {rect.x} | cXMax: {rect.y} | cYmin: {rect.width} | cYmax: {rect.height}");
-        // if (Event.current.type == EventType.Repaint)
-        // {
-        //     var tex = aSprite.texture;
-        //     Debug.Log($"texW: {tex.width} | texH: {tex.height}");
-        //     Debug.Log($"111 cXmin: {c.xMin} | cXMax: {c.xMax} | cYmin: {c.yMin} | cYmax: {c.yMax}");
-        //     c.xMin /= tex.width;
-        //     c.xMax /= tex.width;
-        //     c.yMin /= tex.height;
-        //     c.yMax /= tex.height;
-        //     Debug.Log($"222 cXmin: {c.xMin} | cXMax: {c.xMax} | cYmin: {c.yMin} | cYmax: {c.yMax}");
-        //     /*v TODO - find a way to display without streching v*/
-        //     GUI.DrawTexture(rect, tex);
-        //     GUI.DrawTextureWithTexCoords(rect, tex, c);
-        // }
     }
 }

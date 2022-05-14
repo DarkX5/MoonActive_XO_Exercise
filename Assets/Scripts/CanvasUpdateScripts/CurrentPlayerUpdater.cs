@@ -10,7 +10,9 @@ public class CurrentPlayerUpdater : MonoBehaviour
     void Start()
     {
         if (textBox == null)
+        {
             textBox = transform.GetComponent<Text>();
+        }
         lastPlayerPos = (GameHandler.Instance.PlayerNo - 1);
 
         GameHandler.onNextTurn += SetTextboxValue;

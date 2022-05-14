@@ -1,7 +1,5 @@
 using System.Collections;
-// using System.Collections.Generic;
 using NUnit.Framework;
-// using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using XO.Core;
@@ -51,8 +49,6 @@ public class PlayTestScript
     [UnityTest]
     public IEnumerator TestGameDraw()
     {
-        // dataLoader.SetGamePlayers(new PlayerTypes[] { PlayerTypes.Player, PlayerTypes.Player });
-
         // test game draw 
         gameHandler.DrawGame();
 
@@ -72,10 +68,6 @@ public class PlayTestScript
     [UnityTest]
     public IEnumerator TestGameWin()
     {
-        // dataLoader.SetGamePlayers(new PlayerTypes[] { PlayerTypes.Player, PlayerTypes.Player });
-
-        // SetupGameEndPrefabs();
-
         gameHandler.WinGame((uint)Random.Range(1, 3));
 
         // wait for object creation and initial setup
@@ -95,10 +87,6 @@ public class PlayTestScript
     [UnityTest]
     public IEnumerator TestGameLose()
     {
-        // dataLoader.SetGamePlayers(new PlayerTypes[] { PlayerTypes.Player, PlayerTypes.AI });
-
-        // SetupGameEndPrefabs();
-
         // wait for object creation and initial setup
         yield return new WaitForSeconds(0.1f);
 

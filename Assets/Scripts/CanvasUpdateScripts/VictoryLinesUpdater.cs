@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using XO.Core;
@@ -14,7 +12,8 @@ public class VictoryLinesUpdater : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (lineImage == null) {
+        if (lineImage == null)
+        {
             lineImage = transform.GetChild(0).GetComponentInChildren<Image>();
         }
 
@@ -71,7 +70,9 @@ public class VictoryLinesUpdater : MonoBehaviour
                     break;
             }
             lineImageRect.localRotation = Quaternion.AngleAxis(90f, Vector3.forward);
-        } else if (winType == WinType.Horizontal) {
+        }
+        else if (winType == WinType.Horizontal)
+        {
             switch (idx)
             {
                 case 0:

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using XO.Core;
 
@@ -23,7 +22,6 @@ public class PlayerTurnTimer : MonoBehaviour
     public bool IsGameEnded { get { return gameEnded; } }
     private void Start()
     {
-        // gameEnded = false;
         GameHandler.onNextTurn += ResetTimer;
         GameHandler.onUndoTurn += ResetTimer;
         GameHandler.onEndTurn += StopTimer;
@@ -50,13 +48,13 @@ public class PlayerTurnTimer : MonoBehaviour
     }
     private void GameEnded(uint turnNo)
     {
-        Debug.Log ("game ended = " + gameEnded + " " + turnNo);
+        Debug.Log("game ended = " + gameEnded + " " + turnNo);
         gameEnded = true;
         StopTimer(0);
     }
     private void GameEnded()
     {
-        Debug.Log ("game ended = " + gameEnded);
+        Debug.Log("game ended = " + gameEnded);
         gameEnded = true;
         StopTimer(0);
     }

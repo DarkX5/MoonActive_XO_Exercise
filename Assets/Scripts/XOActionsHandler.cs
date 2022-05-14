@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// using UnityEngine.UI;
-// using XO.Core;
 
 namespace XO.Core
 {
@@ -24,7 +22,6 @@ namespace XO.Core
         List<int> freeSpaces = new List<int>();
         private uint boardSize;
         private uint minWinPoints;
-        // private bool hintUsed = false;
 
         public uint BoardSize { get { return boardSize; } }
         public uint[,] GameBoard { get { return gameBoard; } }
@@ -58,14 +55,12 @@ namespace XO.Core
             // subscribe to turn end event
             GameHandler.onEndTurn += CheckValues;
             GameHandler.onUndoTurn += EnableButton;
-            // GameHandler.onMoveAI += AIMove;
         }
         private void OnDestroy()
         {
             // unsubscribe to turn end event
             GameHandler.onEndTurn -= CheckValues;
             GameHandler.onUndoTurn -= EnableButton;
-            // GameHandler.onMoveAI -= AIMove;
         }
 
         private void UpdateGameBoardData()
@@ -91,7 +86,6 @@ namespace XO.Core
                     // clear previous hint
                     if (buttonList[idx].HintActivated) {
                         buttonList[idx].DeactivateHintButton();
-                        // hintUsed = false;
                     }
                 }
             }
@@ -253,21 +247,9 @@ namespace XO.Core
                 // activate position button
                 buttonList[idx].ActivateHintButton();
             }
-            // return hintOk;
-            // hintUsed = true;
-            // UpdateGameBoardData();
-
-            // if (freeSpaces.Count < 1) { return; }
-
-            // // get random empty position button index
-            // int idx = freeSpaces[UnityEngine.Random.Range((int)0, (int)freeSpaces.Count)];
-
-            // // activate position button
-            // buttonList[idx].ActivateHintButton();
         }
 
         public int GetHintPosition() {
-            // hintUsed = true;
             UpdateGameBoardData();
 
             if (freeSpaces.Count < 1) { return -1; }

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using XO.Core;
@@ -40,6 +39,11 @@ public class XOContainerActions : MonoBehaviour
             button = GetComponentInChildren<Button>();
         }
 
+        if (hintActivated)
+        {
+            DeactivateHintButton();
+        }
+
         // turn off button
         button.enabled = false;
         GameHandler.Instance.AddMove(buttonID);
@@ -72,6 +76,11 @@ public class XOContainerActions : MonoBehaviour
         {
             // cache button
             button = GetComponentInChildren<Button>();
+        }
+
+        if (hintActivated)
+        {
+            DeactivateHintButton();
         }
 
         // turn off button

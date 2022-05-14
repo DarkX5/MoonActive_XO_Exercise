@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using XO.Core;
@@ -10,7 +9,6 @@ public class BackgroundUpdater : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-            Debug.Log($"BackgroundUpdater: {transform.GetComponentInChildren<Image>().sprite}");
         StartCoroutine(LoadBackgroundAfterDataLoadCO());
     }
     IEnumerator LoadBackgroundAfterDataLoadCO()
@@ -18,7 +16,6 @@ public class BackgroundUpdater : MonoBehaviour
         yield return new WaitForSeconds(startUpdateFrequency);
         if (DataLoader.Instance.IsDataLoaded)
         {
-            Debug.Log($"BackgroundUpdater: {transform.GetComponentInChildren<Image>().sprite}");
             transform.GetComponentInChildren<Image>().sprite = DataLoader.Instance.BGSprite;
         }
         else

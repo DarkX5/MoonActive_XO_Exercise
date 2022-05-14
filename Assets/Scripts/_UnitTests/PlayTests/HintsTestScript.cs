@@ -1,7 +1,5 @@
 using System.Collections;
-// using System.Collections.Generic;
 using NUnit.Framework;
-// using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using XO.Core;
@@ -42,7 +40,7 @@ public class HintsTestScript
         yield return new WaitForSeconds(0.1f);
 
         DebugLogBoardContents();
-        
+
         int newHintPos = -1;
         // fill board
         for (int i = 0, pos = 0; i < xoActionHandler.BoardSize; i += 1)
@@ -55,10 +53,13 @@ public class HintsTestScript
 
                 // check if it works across the game for all positions (NO need to test if positions are valid -> ONLY returns "free"/"unclaimed positions)
                 newHintPos = xoActionHandler.GetHintPosition();
-                if (i == j && (i >= xoActionHandler.BoardSize - 1)) {
+                if (i == j && (i >= xoActionHandler.BoardSize - 1))
+                {
                     // if no more free positions left -> hint should be -1 
                     Assert.Less(newHintPos, 0);
-                } else {
+                }
+                else
+                {
                     // free spaces left -> hint should be greater than the current position
                     Assert.Greater(newHintPos, pos);
                 }
@@ -69,7 +70,7 @@ public class HintsTestScript
     }
 
 
-#region Helpers
+    #region Helpers
 
     private void DebugLogBoardContents()
     {
@@ -86,6 +87,6 @@ public class HintsTestScript
         }
     }
 
-#endregion
+    #endregion
 
 }
