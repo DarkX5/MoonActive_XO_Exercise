@@ -3,16 +3,18 @@ using UnityEngine.UI;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System;
 
 [ExecuteInEditMode]
 public class AssetBundleCreator : EditorWindow
 {
-    static string assetBundleName = "AssetBundle_";
-    static Sprite xSprite = null;
-    static Sprite oSprite = null;
-    static Sprite bgSprite = null;
-    static string filePath;
-
+    string assetBundleName = "AssetBundle_";
+    Texture2D xSprite = null;
+    Texture2D oSprite = null;
+    Texture2D bgSprite = null;
+    string filePath;
+    AssetBundle assetBundle;
 
     [MenuItem("Window/AssetBundleCreator")]
 
@@ -23,22 +25,22 @@ public class AssetBundleCreator : EditorWindow
 
     void OnGUI()
     {
-        filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "MoonActive");
+        filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "AssetBundles");
 
         GUILayout.Label("Base Settings", EditorStyles.boldLabel);
 
         assetBundleName = EditorGUILayout.TextField("Asset Bundle Name", assetBundleName);
 
         GUILayout.Label("X Sprite");
-        xSprite = EditorGUILayout.ObjectField(xSprite, typeof(Sprite), true) as Sprite;
+        xSprite = EditorGUILayout.ObjectField(xSprite, typeof(Texture2D), true) as Texture2D;
         DrawOnGUISprite(xSprite, 1);
 
         GUILayout.Label("O Sprite");
-        oSprite = EditorGUILayout.ObjectField(oSprite, typeof(Sprite), true) as Sprite;
+        oSprite = EditorGUILayout.ObjectField(oSprite, typeof(Texture2D), true) as Texture2D;
         DrawOnGUISprite(oSprite, 2);
 
         GUILayout.Label("Background Sprite");
-        bgSprite = EditorGUILayout.ObjectField(bgSprite, typeof(Sprite), true) as Sprite;
+        bgSprite = EditorGUILayout.ObjectField(bgSprite, typeof(Texture2D), true) as Texture2D;
         DrawOnGUISprite(bgSprite, 3);
 
         // add a space separator between the buttons and controls
@@ -53,18 +55,18 @@ public class AssetBundleCreator : EditorWindow
         /*v TODO - remove after testing v*/
         if (GUILayout.Button("Load"))
         {
-            LoadAssetBundle(assetBundleName, xSprite.name);
+            LoadAssetBundle(assetBundleName);
         }
     }
     void BuildAllAssetBundles()
     {
-        /*v TODO - fix "No AssetBundle has been set for this build." error v*/
+        // /*v TODO - fix "No AssetBundle has been set for this build." error v*/
         // AssetBundleBuild[] buildMap = new AssetBundleBuild[] { new AssetBundleBuild() };
-        // buildMap[0].assetBundleName = $"{assetBundleName}.unity3d";
+        // buildMap[0].assetBundleName = assetBundleName; //$"{assetBundleName}.unity3d";
         // buildMap[0].assetNames = new string[] { 
         //                                 $"Assets/Textures/MoonActive/{bgSprite.name}.png"};
-        // buildMap[0].addressableNames = new string[] {
-        //                                 $"{Application.streamingAssetsPath}/MoonActive/{bgSprite.name}.png"};
+        // // buildMap[0].addressableNames = new string[] {
+        // //                                 $"{Application.streamingAssetsPath}/MoonActive/{bgSprite.name}.png"};
 
         // BuildPipeline.BuildAssetBundles($"Assets/StreamingAssets/AssetBundles/",
         //                                 buildMap,
@@ -77,19 +79,19 @@ public class AssetBundleCreator : EditorWindow
 
         ExportResource();
 
-        // //Refresh the Project folder
-        // AssetDatabase.Refresh();
+        //Refresh the Project folder
+        AssetDatabase.Refresh();
     }
 
     /*v TODO - deprecated - find better way v*/
-    static void ExportResource()
+    void ExportResource()
     {
-        Debug.Log(filePath);
+        // Debug.Log(filePath);
         string path = System.IO.Path.Combine(filePath, $"{assetBundleName}.unity3d");
-        Debug.Log(path);
-        Object[] selection = new Object[] {
-                                    xSprite, 
-                                    oSprite, 
+        // Debug.Log(path);
+        UnityEngine.Object[] selection = new UnityEngine.Object[] {
+                                    xSprite,
+                                    oSprite,
                                     bgSprite };
         BuildPipeline.BuildAssetBundle(selection[0], selection, path,
                                        BuildAssetBundleOptions.CollectDependencies
@@ -100,35 +102,90 @@ public class AssetBundleCreator : EditorWindow
         AssetDatabase.Refresh();
     }
 
-    private void LoadAssetBundle(string assetBundleName, string objectNameToLoad)
+    private void LoadAssetBundle(string assetBundleName)
     {
         // string filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "AssetBundles");
         var path = System.IO.Path.Combine(filePath, $"{assetBundleName}.unity3d");
 
         //Load AssetBundle
-        var assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(path);
+        assetBundle = AssetBundle.LoadFromFile(path);
+        if (assetBundle == null) { return; }
 
-        // yield return assetBundleCreateRequest;
+        Texture2D[] loadedAssets = assetBundle.LoadAllAssets<Texture2D>();
 
-        AssetBundle asseBundle = assetBundleCreateRequest.assetBundle;
+        // do something with the sprites ->> random order when loading
+        for (int i = 0; i < loadedAssets.Length; i += 1)
+        {
+            if (loadedAssets[i].name == "ExTarget")
+            {
+                xSprite = loadedAssets[i];
+            }
+            else if (loadedAssets[i].name == "CircleTarget")
+            {
+                oSprite = loadedAssets[i];
+            }
+            else if (loadedAssets[i].name == "EmptyBG")
+            {
+                bgSprite = loadedAssets[i];
+            }
+        }
+        assetBundle.Unload(false);
 
-        //Load the "objectNameToLoad" Asset (Use GameObject if prefab)
-        AssetBundleRequest asset = asseBundle?.LoadAssetAsync<Sprite>(objectNameToLoad);
-
-        // yield return asset;
-
-        //Retrieve the object (Use GameObject if prefab)
-        Sprite loadedAsset = asset.asset as Sprite;
-
-
-
-
-// MoonActive
-        // //Do something with the loaded loadedAsset  object (Load to RawImage for example) 
-        // image.texture = loadedAsset;
+        /*v TODO - remove try catch after fixing the compressed images error given by EncodeToPNG() v*/
+        try {
+            SaveSpriteToEditorPath(bgSprite, Application.streamingAssetsPath + "/EmptyBG.png");
+        } catch {}
+        try {
+            SaveSpriteToEditorPath(xSprite, Application.streamingAssetsPath + "/PlayerIcon1.png");
+        } catch {} 
+        try {
+            SaveSpriteToEditorPath(oSprite, Application.streamingAssetsPath + "/PlayerIcon2.png");
+        } catch {}
     }
 
-    void DrawOnGUISprite(Sprite aSprite, int heightIdx)
+    /*v TODO - find better way v*/
+    void SaveSpriteToEditorPath(Texture2D sp, string path)
+    {
+        if (sp == null) { return; }
+        string dir = Path.GetDirectoryName(path);
+        if (!Directory.Exists(dir)) {
+            Directory.CreateDirectory(dir);
+        }
+
+        // remove existing file
+        File.Delete(path);
+        File.WriteAllBytes(path, sp.EncodeToPNG());
+        // AssetDatabase.Refresh();
+        // AssetDatabase.Refresh();
+        // var assetFound = AssetDatabase.FindAssets(sp.name, new string[] { "Assets/StreamingAssets" });
+        // if (assetFound.Length > 0)
+        // {
+        //     AssetDatabase.RemoveObjectFromAsset(sp);
+        //     // var ok = AssetDatabase.DeleteAsset($"Assets/{sp.name}.asset");
+        //     Debug.Log($"sp: {sp.name} | ok: {sp}");
+        //     AssetDatabase.SaveAssets();
+        //     // AssetDatabase.AddObjectToAsset(sp, "Assets/StreamingAssets");
+        // }
+
+        // AssetDatabase.Refresh();
+        // AssetDatabase.AddObjectToAsset(sp, "Assets/StreamingAssets");
+        // AssetDatabase.AddObjectToAsset(sp, "Assets/StreamingAssets");
+        // AssetDatabase.SaveAssets();
+        // AssetDatabase.Refresh();
+
+        // AssetDatabase.SaveAssets();
+        // AssetDatabase.Refresh();
+        // TextureImporter ti = AssetImporter.GetAtPath(path) as TextureImporter;
+
+        // ti.spritePixelsPerUnit = sp.pixelsPerUnit;
+        // ti.mipmapEnabled = false;
+        // EditorUtility.SetDirty(sp);
+        // ti.SaveAndReimport();
+
+        // return AssetDatabase.LoadAssetAtPath("Assets/StreamingAssets", typeof(Texture2D)) as Texture2D;
+        // return AssetDatabase.LoadAssetAtPath(path, typeof(Sprite)) as Sprite;
+    }
+    void DrawOnGUISprite(Texture2D aSprite, int heightIdx)
     {
         GUILayout.Label("    Preview");
         float spriteW = 40;
@@ -140,7 +197,7 @@ public class AssetBundleCreator : EditorWindow
 
         if (Event.current.type == EventType.Repaint)
         {
-            EditorGUI.DrawPreviewTexture(new Rect(100, heightIdx * 100, spriteW, spriteH), aSprite.texture);
+            EditorGUI.DrawPreviewTexture(new Rect(100, heightIdx * 100, spriteW, spriteH), aSprite);
         }
 
         // Rect c = aSprite.rect;

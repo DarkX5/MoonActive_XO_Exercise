@@ -11,6 +11,8 @@ namespace XO.Core
     public class DataLoader : MonoBehaviour
     {
         public static DataLoader Instance { get; private set; }
+        [Header("Basic Settings")]
+        [SerializeField] private string streamingAssetsGraphicsPath = ""; // "/MoonActive";
         [Header("Sound Settings")]
         [SerializeField] private AudioClip buttonClickSFX = null;
         [SerializeField] private AudioClip gameButtonClickSFX = null;
@@ -20,6 +22,7 @@ namespace XO.Core
         [SerializeField] private PlayerTypes[] playerTypesList;
         [SerializeField] private Color[] playerColors = null;
         [SerializeField] private Sprite[] playerIcons = null;
+        [SerializeField] private Sprite bgSprite = null;
         [Header("UI Customizations")]
         [SerializeField] private Sprite horizontalStrikeoutSprite = null;
         private bool isAllDataLoaded = false;
@@ -28,8 +31,10 @@ namespace XO.Core
         private uint playerNo = 2;
         private PlayerController[] playerList = null;
         [SerializeField] private bool hintsActive = false;
+        private bool bgLoaded = false;
 
         public Color[] PlayerColors { get { return playerColors; } }
+        public Sprite BGSprite { get { return bgSprite; } }
         public Sprite GetCurrentPlayerIcon(int playerIconIdx) { return playerIcons[playerIconIdx]; }
         public Sprite HorizontalStrikeoutSprite { get { return horizontalStrikeoutSprite; } }
         public AudioClip ButtonClickSFX { get { return buttonClickSFX; } }
@@ -90,12 +95,14 @@ namespace XO.Core
             string url;
             for (int i = 0; i < playerNo; i += 1)
             {
-                url = $"{Application.streamingAssetsPath}/MoonActive/PlayerIcon{(i + 1)}.png";
+                url = $"{Application.streamingAssetsPath}{streamingAssetsGraphicsPath}/PlayerIcon{(i + 1)}.png";
                 GetPlayerSpriteIconFromURL(i, url);
+                url = $"{Application.streamingAssetsPath}{streamingAssetsGraphicsPath}/EmptyBG.png";
+                GetBackgroundSpriteIconFromURL(url);
             }
 
             // load strikeout image
-            url = $"{Application.streamingAssetsPath}/MoonActive/Line.png";
+            url = $"{Application.streamingAssetsPath}{streamingAssetsGraphicsPath}/Line.png";
             GetSpriteStrikeoutImageFromURL(url);
         }
 
@@ -120,6 +127,28 @@ namespace XO.Core
             // image.texture = loadedAsset;
         }
 
+        private void GetBackgroundSpriteIconFromURL(string url)
+        {
+            UnityEditor.AssetDatabase.Refresh();
+            StartCoroutine(ImageRequest(url, (UnityWebRequest req) =>
+            {
+                // Debug.Log($"url {url}");
+                if (req.result == UnityWebRequest.Result.Success)
+                {
+                    // Get the texture out using a helper downloadhandler
+                    auxTex = DownloadHandlerTexture.GetContent(req);
+                    // Save image to game cache
+                    bgSprite = Sprite.Create(auxTex, new Rect(0, 0, auxTex.width, auxTex.height), new Vector2(0.5f, 0.5f));
+                    // Debug.Log($"GetBackgroundSpriteIconFromURL: {bgSprite.name} | isNUll {bgSprite == null}");
+                    bgLoaded = true;
+                    CheckIsDataLoaded();
+                }
+                else
+                {
+                    Debug.Log($"{req.error}: {req.downloadHandler.text}");
+                }
+            }));
+        }
         private void GetPlayerSpriteIconFromURL(int idx, string url)
         {
             StartCoroutine(ImageRequest(url, (UnityWebRequest req) =>
@@ -170,6 +199,11 @@ namespace XO.Core
             isAllDataLoaded = true;
             // check if strikeout line sprite has been loaded
             if (horizontalStrikeoutSprite == null)
+            {
+                isAllDataLoaded = false;
+            }
+            // check if background was loaded
+            if (!bgLoaded)
             {
                 isAllDataLoaded = false;
             }
